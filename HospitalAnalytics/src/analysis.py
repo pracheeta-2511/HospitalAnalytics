@@ -3,8 +3,8 @@
 AIIMS Bhubaneswar Patient Analytics — Analysis & Visualization
 =============================================================
 Project     : Hospital Patient Data Analysis
-Author      : [Your Name] | Roll No: [Your Roll No]
-Batch       : [Your Batch]
+Project  : Hospital Patient Data Analysis
+Author   : Pracheeta Parida | Roll No: 2330173
 Description : Pandas analysis + Matplotlib/Seaborn charts
               Data sourced from SAP S/4HANA FI Module (FB60)
 =============================================================
