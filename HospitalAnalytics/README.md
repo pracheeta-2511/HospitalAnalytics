@@ -1,13 +1,11 @@
-# 🏥 AIIMS Bhubaneswar — Hospital Patient Analytics
+# AIIMS Bhubaneswar — Hospital Patient Analytics
 
-**Author:** [Your Name] | **Roll No:** [Your Roll No] | **Batch:** [Your Batch]
-
-## 📌 Project Overview
+## Project Overview
 End-to-end data analytics pipeline for hospital patient data.
 Data originates from SAP S/4HANA FI Module (Transaction FB60) and is
 processed through an ETL pipeline before analysis and visualization.
 
-## 🗂️ Project Structure
+## Project Structure
 ```
 HospitalAnalytics/
 ├── data/
@@ -17,17 +15,16 @@ HospitalAnalytics/
 │   ├── analysis.py           ← Pandas analysis + Charts
 │   └── queries.sql           ← All SQL queries (27 queries)
 ├── output/
-│   ├── hospital.db           ← SQLite database (auto-generated)
-│   ├── charts/               ← All chart images (auto-generated)
-│   └── etl_pipeline.log      ← ETL run log (auto-generated)
-├── sap_screenshots/          ← SAP S/4HANA reference screenshots
+│   ├── hospital.db           ← SQLite database 
+│   ├── charts/               ← All chart images
+│   └── etl_pipeline.log      ← ETL run log 
 ├── report/
 │   └── Project_Report.pdf    ← Final project report
 ├── requirements.txt
 └── README.md
 ```
 
-## 🚀 How to Run
+## How to Run
 
 ### Step 1 — Install dependencies
 ```bash
@@ -48,22 +45,12 @@ python src/analysis.py
 ### Step 4 — View SQL Queries
 Open `src/queries.sql` in any SQL editor or DB Browser for SQLite.
 
-## 🔗 SAP Integration
-Patient billing data is sourced from **SAP S/4HANA**:
-| Data Field | SAP Source | Transaction |
-|---|---|---|
-| treatment_cost | FI — Billing Document | FB60 |
-| insurance_covered | FI — Insurance Posting | F-02 |
-| doctor | HR — Employee Master | PA20 |
-| patient_id | SD — Customer Master | XD03 |
-
-## 📊 Tech Stack
+## Tech Stack
 - **Python** — Pandas, Matplotlib, Seaborn
 - **SQL** — SQLite (with advanced window functions, CTEs)
 - **ETL** — Custom pipeline with data quality checks
-- **SAP S/4HANA** — Data source (FI Module)
 
-## 📈 Key Insights
+## Key Insights
 - Heart Disease has the highest average treatment cost (₹50,000+)
 - Dr. Mohanty handles the most patients and generates highest revenue
 - Bhubaneswar has the highest patient footfall
