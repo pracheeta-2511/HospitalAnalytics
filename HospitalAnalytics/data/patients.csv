@@ -1,0 +1,31 @@
+patient_id,patient_name,age,gender,city,disease,category,doctor,department,admission_date,discharge_date,treatment_cost,insurance_covered,sap_billing_doc
+P001,Suresh Patra,45,Male,Bhubaneswar,Diabetes,Chronic,Dr. Mishra,Endocrinology,2025-01-05,2025-01-10,12000,8000,SAP-FB60-1001
+P002,Priya Nanda,30,Female,Cuttack,Fever,Acute,Dr. Sahoo,General Medicine,2025-01-07,2025-01-09,3500,2000,SAP-FB60-1002
+P003,Ramesh Behera,55,Male,Rourkela,Heart Disease,Chronic,Dr. Mohanty,Cardiology,2025-01-08,2025-01-15,45000,30000,SAP-FB60-1003
+P004,Anita Das,22,Female,Bhubaneswar,Flu,Acute,Dr. Rath,General Medicine,2025-01-10,2025-01-12,2500,1500,SAP-FB60-1004
+P005,Bijay Swain,40,Male,Bhubaneswar,Diabetes,Chronic,Dr. Mishra,Endocrinology,2025-01-11,2025-01-14,9500,6000,SAP-FB60-1005
+P006,Kavita Mohanty,35,Female,Cuttack,Asthma,Chronic,Dr. Panda,Pulmonology,2025-01-12,2025-01-16,15000,10000,SAP-FB60-1006
+P007,Deepak Jena,60,Male,Rourkela,Heart Disease,Chronic,Dr. Mohanty,Cardiology,2025-01-13,2025-01-20,52000,35000,SAP-FB60-1007
+P008,Sunita Patnaik,28,Female,Bhubaneswar,Typhoid,Acute,Dr. Sahoo,General Medicine,2025-01-14,2025-01-18,6000,4000,SAP-FB60-1008
+P009,Manoj Kumar,50,Male,Cuttack,Diabetes,Chronic,Dr. Mishra,Endocrinology,2025-01-15,2025-01-19,11000,7000,SAP-FB60-1009
+P010,Reena Singh,33,Female,Bhubaneswar,Flu,Acute,Dr. Rath,General Medicine,2025-01-16,2025-01-17,2000,1000,SAP-FB60-1010
+P011,Ashok Nayak,48,Male,Rourkela,Asthma,Chronic,Dr. Panda,Pulmonology,2025-01-17,2025-01-21,14000,9000,SAP-FB60-1011
+P012,Sujata Devi,65,Female,Cuttack,Heart Disease,Chronic,Dr. Mohanty,Cardiology,2025-01-18,2025-01-25,48000,32000,SAP-FB60-1012
+P013,Prakash Rout,38,Male,Bhubaneswar,Typhoid,Acute,Dr. Sahoo,General Medicine,2025-01-19,2025-01-22,5500,3500,SAP-FB60-1013
+P014,Meena Pradhan,42,Female,Rourkela,Diabetes,Chronic,Dr. Mishra,Endocrinology,2025-01-20,2025-01-24,10500,7000,SAP-FB60-1014
+P015,Santosh Das,70,Male,Bhubaneswar,Heart Disease,Chronic,Dr. Mohanty,Cardiology,2025-01-21,2025-01-30,55000,38000,SAP-FB60-1015
+P016,Lipika Patel,25,Female,Cuttack,Fever,Acute,Dr. Rath,General Medicine,2025-01-22,2025-01-23,1800,1000,SAP-FB60-1016
+P017,Niraj Biswal,52,Male,Bhubaneswar,Asthma,Chronic,Dr. Panda,Pulmonology,2025-01-23,2025-01-27,13500,9000,SAP-FB60-1017
+P018,Geeta Sahu,44,Female,Rourkela,Diabetes,Chronic,Dr. Mishra,Endocrinology,2025-01-24,2025-01-28,10000,6500,SAP-FB60-1018
+P019,Tarun Mahapatra,31,Male,Cuttack,Flu,Acute,Dr. Rath,General Medicine,2025-01-25,2025-01-26,2200,1200,SAP-FB60-1019
+P020,Sarmistha Roy,58,Female,Bhubaneswar,Heart Disease,Chronic,Dr. Mohanty,Cardiology,2025-01-26,2025-02-02,50000,34000,SAP-FB60-1020
+P021,Hemant Kar,36,Male,Rourkela,Typhoid,Acute,Dr. Sahoo,General Medicine,2025-01-27,2025-01-30,5800,3800,SAP-FB60-1021
+P022,Pallavi Mishra,29,Female,Bhubaneswar,Fever,Acute,Dr. Rath,General Medicine,2025-01-28,2025-01-29,1900,1000,SAP-FB60-1022
+P023,Dilip Senapati,62,Male,Cuttack,Asthma,Chronic,Dr. Panda,Pulmonology,2025-01-29,2025-02-03,16000,11000,SAP-FB60-1023
+P024,Mamata Tripathy,47,Female,Bhubaneswar,Diabetes,Chronic,Dr. Mishra,Endocrinology,2025-02-01,2025-02-05,11500,7500,SAP-FB60-1024
+P025,Rajan Panigrahi,53,Male,Rourkela,Heart Disease,Chronic,Dr. Mohanty,Cardiology,2025-02-02,2025-02-10,47000,31000,SAP-FB60-1025
+P026,Sonali Dash,27,Female,Cuttack,Flu,Acute,Dr. Rath,General Medicine,2025-02-03,2025-02-04,2100,1100,SAP-FB60-1026
+P027,Bijendra Nath,66,Male,Bhubaneswar,Heart Disease,Chronic,Dr. Mohanty,Cardiology,2025-02-04,2025-02-12,53000,36000,SAP-FB60-1027
+P028,Ranjita Panda,39,Female,Rourkela,Typhoid,Acute,Dr. Sahoo,General Medicine,2025-02-05,2025-02-08,6200,4200,SAP-FB60-1028
+P029,Subash Chand,57,Male,Cuttack,Asthma,Chronic,Dr. Panda,Pulmonology,2025-02-06,2025-02-10,14500,9500,SAP-FB60-1029
+P030,Indira Lenka,43,Female,Bhubaneswar,Diabetes,Chronic,Dr. Mishra,Endocrinology,2025-02-07,2025-02-11,10800,7200,SAP-FB60-1030

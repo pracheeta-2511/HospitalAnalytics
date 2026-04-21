@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIIMS Bhubaneswar — Patient Analytics Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f4f6f8; --card: #ffffff; --text: #1a1a1a; --text2: #666; --text3: #999;
+  --border: rgba(0,0,0,0.10); --border2: rgba(0,0,0,0.18);
+  --bg2: #f0f0f0; --bg3: #e8e8e8;
+  --success-bg:#e2f0ec; --success:#0D6E56;
+  --danger-bg:#fdecea;  --danger:#a32d2d;
+  --info-bg:#deeaf1;    --info:#1F4E79;
+  --font: 'Segoe UI', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:#1a1a1a; --card:#252525; --text:#e8e8e8; --text2:#aaa; --text3:#666;
+    --border:rgba(255,255,255,0.10); --border2:rgba(255,255,255,0.18);
+    --bg2:#2e2e2e; --bg3:#383838;
+    --success-bg:#0a2e24; --success:#5DCAA5;
+    --danger-bg:#2e1111;  --danger:#F09595;
+    --info-bg:#0c2035;    --info:#85B7EB;
+  }
+}
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.topbar {
+  background: var(--card); border-bottom: 0.5px solid var(--border);
+  padding: 14px 24px; display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  position: sticky; top: 0; z-index: 10;
+}
+.topbar h1 { font-size: 16px; font-weight: 600; }
+.topbar p  { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.topbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.live-badge {
+  font-size: 11px; padding: 4px 12px; border-radius: 99px;
+  background: var(--success-bg); color: var(--success); font-weight: 600;
+  display: flex; align-items: center; gap: 5px;
+}
+.live-badge::before {
+  content:''; width:7px; height:7px; border-radius:50%;
+  background: var(--success); animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+select {
+  font-size: 12px; padding: 6px 10px; border-radius: 8px;
+  border: 0.5px solid var(--border2); background: var(--card);
+  color: var(--text); cursor: pointer; font-family: var(--font);
+}
+
+.main { padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
+
+.metrics {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px; margin-bottom: 16px;
+}
+.metric {
+  background: var(--card); border: 0.5px solid var(--border);
+  border-radius: 12px; padding: 16px 18px;
+}
+.metric-label { font-size: 11px; color: var(--text2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.metric-value { font-size: 24px; font-weight: 600; }
+.metric-sub   { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+.charts-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px; margin-bottom: 14px;
+}
+.card {
+  background: var(--card); border: 0.5px solid var(--border);
+  border-radius: 12px; padding: 18px 20px;
+}
+.card-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.card-sub   { font-size: 11px; color: var(--text2); margin-bottom: 14px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+.legend-dot  { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+th {
+  text-align: left; padding: 8px 10px; color: var(--text2);
+  font-weight: 600; font-size: 11px;
+  border-bottom: 0.5px solid var(--border);
+  text-transform: uppercase; letter-spacing: 0.3px;
+}
+td { padding: 8px 10px; border-bottom: 0.5px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg2); }
+
+.pill { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 600; display: inline-block; }
+.pill-chronic { background: var(--danger-bg); color: var(--danger); }
+.pill-acute   { background: var(--success-bg); color: var(--success); }
+.pill-city    { background: var(--info-bg); color: var(--info); }
+
+.progress-bar  { height: 5px; border-radius: 99px; background: var(--bg3); margin-top: 5px; }
+.progress-fill { height: 100%; border-radius: 99px; }
+
+.footer {
+  text-align: center; padding: 20px 24px;
+  font-size: 11px; color: var(--text3);
+  border-top: 0.5px solid var(--border); margin-top: 8px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>AIIMS Bhubaneswar — Patient Analytics Dashboard</h1>
+    <p>Jan 2025 – Feb 2025 &nbsp;·&nbsp; Bhubaneswar · Cuttack · Rourkela, Odisha</p>
+  </div>
+  <div class="topbar-right">
+    <span class="live-badge">Live Dashboard</span>
+    <select id="cityFilter" onchange="applyFilter()">
+      <option value="all">All Cities</option>
+      <option value="Bhubaneswar">Bhubaneswar</option>
+      <option value="Cuttack">Cuttack</option>
+      <option value="Rourkela">Rourkela</option>
+    </select>
+    <select id="catFilter" onchange="applyFilter()">
+      <option value="all">All Categories</option>
+      <option value="Chronic">Chronic</option>
+      <option value="Acute">Acute</option>
+    </select>
+    <select id="doctorFilter" onchange="applyFilter()">
+      <option value="all">All Doctors</option>
+      <option value="Dr. Mishra">Dr. Mishra</option>
+      <option value="Dr. Mohanty">Dr. Mohanty</option>
+      <option value="Dr. Sahoo">Dr. Sahoo</option>
+      <option value="Dr. Rath">Dr. Rath</option>
+      <option value="Dr. Panda">Dr. Panda</option>
+    </select>
+  </div>
+</div>
+
+<div class="main">
+  <div class="metrics" id="metricCards"></div>
+
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-title">Disease distribution</div>
+      <div class="card-sub">Patient count by disease type</div>
+      <div class="legend" id="diseaseLegend"></div>
+      <div style="position:relative;height:200px;">
+        <canvas id="diseaseChart" role="img" aria-label="Doughnut chart of disease distribution">Diabetes 7, Heart Disease 7, Asthma 5, Flu 4, Typhoid 4, Fever 3</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Doctor workload</div>
+      <div class="card-sub">Patients treated per doctor</div>
+      <div style="position:relative;height:240px;">
+        <canvas id="doctorChart" role="img" aria-label="Bar chart of patients per doctor">Dr. Mishra 7, Dr. Mohanty 7, Dr. Rath 6, Dr. Sahoo 5, Dr. Panda 5</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-title">Revenue by city (INR)</div>
+      <div class="card-sub">Total treatment costs per location</div>
+      <div style="position:relative;height:200px;">
+        <canvas id="cityChart" role="img" aria-label="Bar chart of revenue by city">Bhubaneswar 233200, Rourkela 190500, Cuttack 114100</canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Average cost by disease (INR)</div>
+      <div class="card-sub">Mean treatment cost per disease</div>
+      <div style="position:relative;height:200px;">
+        <canvas id="costChart" role="img" aria-label="Bar chart of average treatment cost per disease">Heart Disease 50000, Asthma 14600, Diabetes 10757</canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title">Insurance vs out-of-pocket</div>
+    <div class="card-sub">Monthly stacked cost comparison</div>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>Insurance covered</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>Out-of-pocket</span>
+    </div>
+    <div style="position:relative;height:180px;">
+      <canvas id="stackChart" role="img" aria-label="Stacked bar chart by month">January and February insurance vs out-of-pocket breakdown</canvas>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px;">
+    <div class="card-title" style="margin-bottom:14px;">Patient records</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:70px">ID</th>
+            <th style="width:150px">Name</th>
+            <th style="width:120px">City</th>
+            <th style="width:125px">Disease</th>
+            <th style="width:90px">Category</th>
+            <th style="width:120px">Doctor</th>
+            <th style="width:110px">Cost (INR)</th>
+            <th style="width:110px">Coverage</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  AIIMS Bhubaneswar Patient Analytics &nbsp;·&nbsp; KIIT University Capstone Project 2026
+  &nbsp;·&nbsp; Data Source: SAP S/4HANA FI Module (FB60) &nbsp;·&nbsp; Built with Python · SQL · Chart.js
+</div>
+
+<script>
+const patients = [
+  {id:"P001",name:"Suresh Patra",city:"Bhubaneswar",disease:"Diabetes",category:"Chronic",doctor:"Dr. Mishra",cost:12000,insured:8000},
+  {id:"P002",name:"Priya Nanda",city:"Cuttack",disease:"Fever",category:"Acute",doctor:"Dr. Sahoo",cost:3500,insured:2000},
+  {id:"P003",name:"Ramesh Behera",city:"Rourkela",disease:"Heart Disease",category:"Chronic",doctor:"Dr. Mohanty",cost:45000,insured:30000},
+  {id:"P004",name:"Anita Das",city:"Bhubaneswar",disease:"Flu",category:"Acute",doctor:"Dr. Rath",cost:2500,insured:1500},
+  {id:"P005",name:"Bijay Swain",city:"Bhubaneswar",disease:"Diabetes",category:"Chronic",doctor:"Dr. Mishra",cost:9500,insured:6000},
+  {id:"P006",name:"Kavita Mohanty",city:"Cuttack",disease:"Asthma",category:"Chronic",doctor:"Dr. Panda",cost:15000,insured:10000},
+  {id:"P007",name:"Deepak Jena",city:"Rourkela",disease:"Heart Disease",category:"Chronic",doctor:"Dr. Mohanty",cost:52000,insured:35000},
+  {id:"P008",name:"Sunita Patnaik",city:"Bhubaneswar",disease:"Typhoid",category:"Acute",doctor:"Dr. Sahoo",cost:6000,insured:4000},
+  {id:"P009",name:"Manoj Kumar",city:"Cuttack",disease:"Diabetes",category:"Chronic",doctor:"Dr. Mishra",cost:11000,insured:7000},
+  {id:"P010",name:"Reena Singh",city:"Bhubaneswar",disease:"Flu",category:"Acute",doctor:"Dr. Rath",cost:2000,insured:1000},
+  {id:"P011",name:"Ashok Nayak",city:"Rourkela",disease:"Asthma",category:"Chronic",doctor:"Dr. Panda",cost:14000,insured:9000},
+  {id:"P012",name:"Sujata Devi",city:"Cuttack",disease:"Heart Disease",category:"Chronic",doctor:"Dr. Mohanty",cost:48000,insured:32000},
+  {id:"P013",name:"Prakash Rout",city:"Bhubaneswar",disease:"Typhoid",category:"Acute",doctor:"Dr. Sahoo",cost:5500,insured:3500},
+  {id:"P014",name:"Meena Pradhan",city:"Rourkela",disease:"Diabetes",category:"Chronic",doctor:"Dr. Mishra",cost:10500,insured:7000},
+  {id:"P015",name:"Santosh Das",city:"Bhubaneswar",disease:"Heart Disease",category:"Chronic",doctor:"Dr. Mohanty",cost:55000,insured:38000},
+  {id:"P016",name:"Lipika Patel",city:"Cuttack",disease:"Fever",category:"Acute",doctor:"Dr. Rath",cost:1800,insured:1000},
+  {id:"P017",name:"Niraj Biswal",city:"Bhubaneswar",disease:"Asthma",category:"Chronic",doctor:"Dr. Panda",cost:13500,insured:9000},
+  {id:"P018",name:"Geeta Sahu",city:"Rourkela",disease:"Diabetes",category:"Chronic",doctor:"Dr. Mishra",cost:10000,insured:6500},
+  {id:"P019",name:"Tarun Mahapatra",city:"Cuttack",disease:"Flu",category:"Acute",doctor:"Dr. Rath",cost:2200,insured:1200},
+  {id:"P020",name:"Sarmistha Roy",city:"Bhubaneswar",disease:"Heart Disease",category:"Chronic",doctor:"Dr. Mohanty",cost:50000,insured:34000},
+  {id:"P021",name:"Hemant Kar",city:"Rourkela",disease:"Typhoid",category:"Acute",doctor:"Dr. Sahoo",cost:5800,insured:3800},
+  {id:"P022",name:"Pallavi Mishra",city:"Bhubaneswar",disease:"Fever",category:"Acute",doctor:"Dr. Rath",cost:1900,insured:1000},
+  {id:"P023",name:"Dilip Senapati",city:"Cuttack",disease:"Asthma",category:"Chronic",doctor:"Dr. Panda",cost:16000,insured:11000},
+  {id:"P024",name:"Mamata Tripathy",city:"Bhubaneswar",disease:"Diabetes",category:"Chronic",doctor:"Dr. Mishra",cost:11500,insured:7500},
+  {id:"P025",name:"Rajan Panigrahi",city:"Rourkela",disease:"Heart Disease",category:"Chronic",doctor:"Dr. Mohanty",cost:47000,insured:31000},
+  {id:"P026",name:"Sonali Dash",city:"Cuttack",disease:"Flu",category:"Acute",doctor:"Dr. Rath",cost:2100,insured:1100},
+  {id:"P027",name:"Bijendra Nath",city:"Bhubaneswar",disease:"Heart Disease",category:"Chronic",doctor:"Dr. Mohanty",cost:53000,insured:36000},
+  {id:"P028",name:"Ranjita Panda",city:"Rourkela",disease:"Typhoid",category:"Acute",doctor:"Dr. Sahoo",cost:6200,insured:4200},
+  {id:"P029",name:"Subash Chand",city:"Cuttack",disease:"Asthma",category:"Chronic",doctor:"Dr. Panda",cost:14500,insured:9500},
+  {id:"P030",name:"Indira Lenka",city:"Bhubaneswar",disease:"Diabetes",category:"Chronic",doctor:"Dr. Mishra",cost:10800,insured:7200},
+];
+
+const COLORS = {
+  "Diabetes":"#1D9E75","Heart Disease":"#E24B4A","Asthma":"#378ADD",
+  "Flu":"#EF9F27","Typhoid":"#7F77DD","Fever":"#D85A30",
+  "Bhubaneswar":"#1D9E75","Cuttack":"#378ADD","Rourkela":"#7F77DD",
+};
+
+let charts = {};
+
+function fmtK(n){ return n>=100000?"₹"+(n/100000).toFixed(2)+"L":n>=1000?"₹"+Math.round(n/1000)+"K":"₹"+n; }
+function fmtFull(n){ return "₹"+n.toLocaleString("en-IN"); }
+function groupBy(arr,key,valKey){ const m={}; arr.forEach(p=>{ m[p[key]]=(m[p[key]]||0)+(valKey?p[valKey]:1); }); return m; }
+
+function getFiltered(){
+  const city=document.getElementById("cityFilter").value;
+  const cat=document.getElementById("catFilter").value;
+  const doc=document.getElementById("doctorFilter").value;
+  return patients.filter(p=>(city==="all"||p.city===city)&&(cat==="all"||p.category===cat)&&(doc==="all"||p.doctor===doc));
+}
+
+function destroyChart(k){ if(charts[k]){ charts[k].destroy(); delete charts[k]; } }
+
+function renderMetrics(data){
+  const rev=data.reduce((s,p)=>s+p.cost,0);
+  const ins=data.reduce((s,p)=>s+p.insured,0);
+  const oop=rev-ins;
+  const avg=data.length?Math.round(rev/data.length):0;
+  const pct=rev?Math.round((ins/rev)*100):0;
+  const low=data.filter(p=>(p.insured/p.cost)<0.5).length;
+  document.getElementById("metricCards").innerHTML=[
+    {l:"Total patients",  v:data.length,  s:"across "+[...new Set(data.map(p=>p.city))].length+" cities"},
+    {l:"Total revenue",   v:fmtK(rev),    s:fmtFull(rev)},
+    {l:"Avg cost/patient",v:fmtK(avg),    s:"per admission"},
+    {l:"Insurance cover", v:pct+"%",      s:fmtK(ins)+" covered"},
+    {l:"Out-of-pocket",   v:fmtK(oop),    s:(100-pct)+"% patient gap"},
+    {l:"Low coverage",    v:low,           s:"patients below 50%"},
+  ].map(m=>`<div class="metric"><div class="metric-label">${m.l}</div><div class="metric-value">${m.v}</div><div class="metric-sub">${m.s}</div></div>`).join("");
+}
+
+function renderCharts(data){
+  const dis=groupBy(data,"disease");
+  const dL=Object.keys(dis), dD=dL.map(k=>dis[k]), dC=dL.map(k=>COLORS[k]||"#888");
+  document.getElementById("diseaseLegend").innerHTML=dL.map((d,i)=>`<span class="legend-item"><span class="legend-dot" style="background:${dC[i]}"></span>${d} (${dis[d]})</span>`).join("");
+
+  destroyChart("disease");
+  charts.disease=new Chart(document.getElementById("diseaseChart"),{
+    type:"doughnut",
+    data:{labels:dL,datasets:[{data:dD,backgroundColor:dC,borderWidth:2,borderColor:"#fff"}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
+  });
+
+  const doc=groupBy(data,"doctor");
+  const docL=Object.keys(doc).sort((a,b)=>doc[b]-doc[a]);
+  destroyChart("doctor");
+  charts.doctor=new Chart(document.getElementById("doctorChart"),{
+    type:"bar",
+    data:{labels:docL,datasets:[{label:"Patients",data:docL.map(k=>doc[k]),backgroundColor:"#378ADD",borderRadius:4}]},
+    options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{ticks:{stepSize:1},grid:{display:false}},y:{grid:{display:false}}}}
+  });
+
+  const cit=groupBy(data,"city","cost");
+  const cL=Object.keys(cit).sort((a,b)=>cit[b]-cit[a]);
+  destroyChart("city");
+  charts.city=new Chart(document.getElementById("cityChart"),{
+    type:"bar",
+    data:{labels:cL,datasets:[{data:cL.map(k=>cit[k]),backgroundColor:cL.map(k=>COLORS[k]||"#888"),borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>"₹"+Math.round(v/1000)+"K"}}}}
+  });
+
+  const dsm=groupBy(data,"disease","cost"), dcn=groupBy(data,"disease");
+  const av={};
+  Object.keys(dsm).forEach(d=>{ av[d]=Math.round(dsm[d]/dcn[d]); });
+  const avL=Object.keys(av).sort((a,b)=>av[b]-av[a]);
+  destroyChart("cost");
+  charts.cost=new Chart(document.getElementById("costChart"),{
+    type:"bar",
+    data:{labels:avL,datasets:[{data:avL.map(k=>av[k]),backgroundColor:avL.map(k=>COLORS[k]||"#888"),borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{maxRotation:25}},y:{ticks:{callback:v=>"₹"+Math.round(v/1000)+"K"}}}}
+  });
+
+  const jan=data.filter(p=>p.id<="P020"), feb=data.filter(p=>p.id>"P020");
+  destroyChart("stack");
+  charts.stack=new Chart(document.getElementById("stackChart"),{
+    type:"bar",
+    data:{
+      labels:["January 2025","February 2025"],
+      datasets:[
+        {label:"Insurance covered",data:[jan.reduce((s,p)=>s+p.insured,0),feb.reduce((s,p)=>s+p.insured,0)],backgroundColor:"#1D9E75",borderRadius:4},
+        {label:"Out-of-pocket",data:[jan.reduce((s,p)=>s+(p.cost-p.insured),0),feb.reduce((s,p)=>s+(p.cost-p.insured),0)],backgroundColor:"#E24B4A",borderRadius:4},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{callback:v=>"₹"+Math.round(v/1000)+"K"}}},
+      plugins:{legend:{labels:{font:{size:11},boxWidth:12}}}}
+  });
+}
+
+function renderTable(data){
+  document.getElementById("tableBody").innerHTML=data.map(p=>{
+    const pct=Math.round((p.insured/p.cost)*100);
+    const col=pct>=60?"#1D9E75":"#E24B4A";
+    return `<tr>
+      <td>${p.id}</td><td>${p.name}</td>
+      <td><span class="pill pill-city">${p.city}</span></td>
+      <td>${p.disease}</td>
+      <td><span class="pill ${p.category==="Chronic"?"pill-chronic":"pill-acute"}">${p.category}</span></td>
+      <td>${p.doctor}</td>
+      <td>${fmtFull(p.cost)}</td>
+      <td>${pct}%<div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${col}"></div></div></td>
+    </tr>`;
+  }).join("");
+}
+
+function applyFilter(){
+  const data=getFiltered();
+  renderMetrics(data);
+  renderCharts(data);
+  renderTable(data);
+}
+
+applyFilter();
+</script>
+</body>
+</html>
