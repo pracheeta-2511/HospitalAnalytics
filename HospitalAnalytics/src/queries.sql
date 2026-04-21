@@ -2,8 +2,8 @@
 -- AIIMS Bhubaneswar Patient Analytics — SQL Queries
 -- =============================================================
 -- Project  : Hospital Patient Data Analysis
--- Author   : [Your Name] | Roll No: [Your Roll No]
--- Batch    : [Your Batch]
+-- Author   : Pracheeta Parida | Roll No: 2330173
+-- Batch    : SAP Data Analytics
 -- Database : SQLite (hospital.db)
 -- Table    : patients
 -- =============================================================
