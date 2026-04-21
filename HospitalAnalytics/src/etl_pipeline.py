@@ -3,8 +3,8 @@
 AIIMS Bhubaneswar Patient Analytics — ETL Pipeline
 =============================================================
 Project     : Hospital Patient Data Analysis
-Author      : [Your Name] | Roll No: [Your Roll No]
-Batch       : [Your Batch]
+Project  : Hospital Patient Data Analysis
+Author   : Pracheeta Parida | Roll No: 2330173
 Description : ETL Pipeline — Extract from CSV (SAP Export),
               Transform (Clean + Validate), Load to SQLite DB
 =============================================================
