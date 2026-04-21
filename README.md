@@ -1,13 +1,13 @@
-# 🏥 AIIMS Bhubaneswar — Hospital Patient Analytics
+# AIIMS Bhubaneswar — Hospital Patient Analytics
 
-**Author:** [Your Name] | **Roll No:** [Your Roll No] | **Batch:** [Your Batch]
+**Author:** Pracheeta Parida | **Roll No:** 2330173
 
-## 📌 Project Overview
+## Project Overview
 End-to-end data analytics pipeline for hospital patient data.
 Data originates from SAP S/4HANA FI Module (Transaction FB60) and is
 processed through an ETL pipeline before analysis and visualization.
 
-## 🗂️ Project Structure
+##  Project Structure
 ```
 HospitalAnalytics/
 ├── data/
@@ -17,17 +17,13 @@ HospitalAnalytics/
 │   ├── analysis.py           ← Pandas analysis + Charts
 │   └── queries.sql           ← All SQL queries (27 queries)
 ├── output/
-│   ├── hospital.db           ← SQLite database (auto-generated)
-│   ├── charts/               ← All chart images (auto-generated)
-│   └── etl_pipeline.log      ← ETL run log (auto-generated)
-├── sap_screenshots/          ← SAP S/4HANA reference screenshots
-├── report/
-│   └── Project_Report.pdf    ← Final project report
+│   ├── hospital.db           ← SQLite database 
+│   ├── charts/               ← All chart images 
+│   └── etl_pipeline.log      ← ETL run log 
 ├── requirements.txt
-└── README.md
 ```
 
-## 🚀 How to Run
+## How to Run
 
 ### Step 1 — Install dependencies
 ```bash
@@ -57,7 +53,7 @@ Patient billing data is sourced from **SAP S/4HANA**:
 | doctor | HR — Employee Master | PA20 |
 | patient_id | SD — Customer Master | XD03 |
 
-## 📊 Tech Stack
+## Tech Stack
 - **Python** — Pandas, Matplotlib, Seaborn
 - **SQL** — SQLite (with advanced window functions, CTEs)
 - **ETL** — Custom pipeline with data quality checks
